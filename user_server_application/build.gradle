@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '3.5.4'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.skills'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation ("org.springframework.boot:spring-boot-starter-web")
+    testImplementation ("org.springframework.boot:spring-boot-starter-test")
+    implementation ("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.postgresql:postgresql:42.7.7")
+    implementation("javax.json:javax.json-api:1.1.4")
+	implementation("org.glassfish:javax.json:1.1.4")
+    implementation ("io.jsonwebtoken:jjwt-api:0.12.7")
+    runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.12.7")
+    runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.12.7")
+}
+
+application {
+    mainClass = 'com.skills.user.UserServiceApplication'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

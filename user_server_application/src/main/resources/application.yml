@@ -1,0 +1,5 @@
+database:
+   driver: org.postgresql.Driver
+   url: jdbc:postgresql://localhost:5432/skill_exchange?ssl=false
+   username: ${SKILL_EXCHANGE_USERNAME}
+   password: ${SKILL_EXCHANGE_PASSWORD}

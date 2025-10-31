@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15                   # ← PostgreSQL Docker image
+    container_name: skill_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${SKILL_EXCHANGE_USERNAME}
+      POSTGRES_PASSWORD: ${SKILL_EXCHANGE_PASSWORD}
+      POSTGRES_DB: ${SKILL_EXCHANGE_DATABASE}
+    ports:
+      - "5432:5432"                      # exposes DB on host port 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data # persist data
+
+  app:
+    build: .                             # builds your Spring Boot app Dockerfile
+    container_name: user_server
+    ports:
+      - "8080:8080"                      # expose API
+    environment:
+      SKILL_EXCHANGE_USERNAME: ${SKILL_EXCHANGE_USERNAME}
+      SKILL_EXCHANGE_PASSWORD: ${SKILL_EXCHANGE_PASSWORD}
+    depends_on:
+      - db                               # ensures DB starts first
+
+volumes:
+  db_data:
