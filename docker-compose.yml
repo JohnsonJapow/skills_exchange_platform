@@ -1,10 +1,8 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:15                   # ← PostgreSQL Docker image
     container_name: skill_db
-    restart: always
+    restart: always                      # ← Automatically restarts the container if it crashes or Docker restarts
     environment:
       POSTGRES_USER: ${SKILL_EXCHANGE_USERNAME}
       POSTGRES_PASSWORD: ${SKILL_EXCHANGE_PASSWORD}
@@ -15,15 +13,28 @@ services:
       - db_data:/var/lib/postgresql/data # persist data
 
   app:
-    build: .                             # builds your Spring Boot app Dockerfile
+    build: .                             # Builds a Docker image from the Dockerfile in your current directory (.)
     container_name: user_server
+    restart: unless-stopped              # ← Restart unless you explicitly stop it (docker stop)
     ports:
       - "8080:8080"                      # expose API
     environment:
       SKILL_EXCHANGE_USERNAME: ${SKILL_EXCHANGE_USERNAME}
       SKILL_EXCHANGE_PASSWORD: ${SKILL_EXCHANGE_PASSWORD}
     depends_on:
-      - db                               # ensures DB starts first
-
-volumes:
+      - db                               # Tells Docker Compose that this container should start after the db container
+  jenkins:
+    image: jenkins/jenkins:lts           # Uses the Long-Term Support Jenkins image (stable)
+    container_name: jenkins
+    restart: unless-stopped              # ← Restart unless you explicitly stop it (docker stop)
+    ports:
+      - "8081:8080"                      # → Maps Jenkins web UI to http://localhost:8081
+      - "50000:50000"                    # → Port used for Jenkins agents (you usually don’t need to touch it)
+    volumes:
+      - jenkins_home:/var/jenkins_home   # → Persists Jenkins config, jobs, and plugins so they aren’t lost if the container restarts
+      - /var/run/docker.sock:/var/run/docker.sock # → Gives Jenkins access to your host’s Docker daemon, so it can build and run Docker containers directly
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"  # → Disables the setup wizard (useful for scripted or repeatable builds)
+volumes:                                 # → This defines named volumes managed by Docker, these volumes live under /var/lib/docker/volumes/ on your host, even after the containers are removed
   db_data:
+  jenkins_home:
