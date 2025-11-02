@@ -2,5 +2,6 @@
 .gradle
 .env
 .vscode
+.DS_Store
 # Ignore Gradle build output directory
 build
