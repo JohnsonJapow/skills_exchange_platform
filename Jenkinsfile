@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "yuehming/user_server"
+        DOCKER_IMAGE = "johnsontengg/user_server"
         DOCKER_TAG   = "latest"
     }
 
@@ -34,8 +34,11 @@ pipeline {
                 // Uses Jenkins stored credentials (ID: dockerhub-credentials) to log in to DockerHub securely.
                 // Pushes the built image (johnsonjapow/user_server:latest) to your DockerHub account.
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                    sh "docker push $DOCKER_IMAGE:$DOCKER_TAG"
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    docker push $DOCKER_IMAGE:$DOCKER_TAG
+                    docker logout
+                    '''
                 }
             }
         }

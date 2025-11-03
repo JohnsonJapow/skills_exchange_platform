@@ -24,9 +24,13 @@ services:
     depends_on:
       - db                               # Tells Docker Compose that this container should start after the db container
   jenkins:
-    image: jenkins/jenkins:lts           # Uses the Long-Term Support Jenkins image (stable)
+    # image: jenkins/jenkins:lts           # Uses the Long-Term Support Jenkins image (stable)
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
     container_name: jenkins
     restart: unless-stopped              # ← Restart unless you explicitly stop it (docker stop)
+    user: root  # temporary root to change permissions
     ports:
       - "8081:8080"                      # → Maps Jenkins web UI to http://localhost:8081
       - "50000:50000"                    # → Port used for Jenkins agents (you usually don’t need to touch it)
@@ -35,6 +39,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # → Gives Jenkins access to your host’s Docker daemon, so it can build and run Docker containers directly
     environment:
       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"  # → Disables the setup wizard (useful for scripted or repeatable builds)
+    entrypoint: >
+      bash -c "
+        usermod -aG docker jenkins || true &&
+        chown root:docker /var/run/docker.sock || true &&
+        chmod 660 /var/run/docker.sock || true &&
+        su jenkins -c '/usr/local/bin/jenkins.sh'"
 volumes:                                 # → This defines named volumes managed by Docker, these volumes live under /var/lib/docker/volumes/ on your host, even after the containers are removed
   db_data:
   jenkins_home:
