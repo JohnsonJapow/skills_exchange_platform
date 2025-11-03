@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Equivalent to running git clone and checking out the main branch.
-                git branch: 'main', url: 'https://github.com/JohnsonJapow/skills_exchange_platform/skills_server.git'
+                git branch: 'main', url: 'https://github.com/JohnsonJapow/skills_exchange_platform.git'
             }
         }
 
