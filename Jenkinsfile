@@ -15,17 +15,17 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Test') {
             steps {
-                // Gradle build
-                sh './gradlew clean build'
+                // Gradle do the unit tests
+                sh './gradlew test'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 // Jenkins builds your Docker image from the Dockerfile in your repo.
-                sh "docker build -t $DOCKER_IMAGE:$DOCKER_TAG ./user_server_application"
+                sh "docker build -t $DOCKER_IMAGE:$DOCKER_TAG ."
             }
         }
 
