@@ -2,7 +2,7 @@
 .gradle
 
 
-build/**
+**/build/**
 .vscode
 **/src/main/resources/static/**
 !gradle/wrapper/gradle-wrapper.jar
@@ -13,7 +13,7 @@ build/**
 
 
 ### Mac OS ###
-.DS_Store
+**/.DS_Store
 
 # Ignore Gradle build output directory
 build
