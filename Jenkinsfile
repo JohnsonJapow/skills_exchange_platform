@@ -50,8 +50,11 @@ pipeline {
                     export SKILL_EXCHANGE_USERNAME=$DB_USER
                     export SKILL_EXCHANGE_PASSWORD=$DB_PASS
                     export SKILL_EXCHANGE_DATABASE=skill_exchange
-                    docker compose down
-                    docker compose up -d
+                    docker pull $DOCKER_IMAGE:$DOCKER_TAG
+                    docker ps -a -q -f name=app | grep -q . && docker stop app && docker rm app || echo "No existing app container"
+                    docker stop app
+                    docker rm app
+                    docker run -d --name app -p 8080:8080 $DOCKER_IMAGE:$DOCKER_TAG
                     '''
                 }
             }
