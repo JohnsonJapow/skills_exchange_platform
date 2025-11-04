@@ -51,6 +51,7 @@ pipeline {
                     export SKILL_EXCHANGE_PASSWORD=$DB_PASS
                     export SKILL_EXCHANGE_DATABASE=skill_exchange
                     docker pull $DOCKER_IMAGE:$DOCKER_TAG
+                    docker rm -f user_server || true
                     docker compose up -d --no-deps --build app
                     '''
                 }
