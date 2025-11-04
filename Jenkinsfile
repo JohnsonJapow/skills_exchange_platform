@@ -46,13 +46,13 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'db-credentials', usernameVariable: 'DB_USER', passwordVariable: 'DB_PASS')]) {
-                    sh """
+                    sh '''
                     export SKILL_EXCHANGE_USERNAME=$DB_USER
                     export SKILL_EXCHANGE_PASSWORD=$DB_PASS
                     export SKILL_EXCHANGE_DATABASE=skill_exchange
                     docker compose down
                     docker compose up -d
-                    """
+                    '''
                 }
             }
         }
