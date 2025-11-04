@@ -11,7 +11,7 @@ COPY . .
 RUN gradle :user_server_application:build -x test
 
 # --- Stage 2: Create lightweight runtime image ---
-FROM openjdk:21-jdk
+FROM eclipse-temurin:21-jdk
 WORKDIR /skills_server_app
 
 # Copy the JAR from the builder stage
