@@ -43,7 +43,7 @@ pipeline {
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Deploy with Docker') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'db-credentials', usernameVariable: 'DB_USER', passwordVariable: 'DB_PASS')]) {
                     sh '''
@@ -51,10 +51,8 @@ pipeline {
                     export SKILL_EXCHANGE_PASSWORD=$DB_PASS
                     export SKILL_EXCHANGE_DATABASE=skill_exchange
                     docker pull $DOCKER_IMAGE:$DOCKER_TAG
-                    docker ps -a -q -f name=app | grep -q . && docker stop app && docker rm app || echo "No existing app container"
-                    docker stop app
-                    docker rm app
-                    docker run -d --name app -p 8080:8080 $DOCKER_IMAGE:$DOCKER_TAG
+                    docker ps -a -q -f name=user_server | grep -q . && docker stop user_server && docker rm user_server || echo "No existing user_server container"
+                    docker run -d --name user_server -p 8080:8080 $DOCKER_IMAGE:$DOCKER_TAG
                     '''
                 }
             }
